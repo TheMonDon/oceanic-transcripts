@@ -28,9 +28,12 @@
   ],
   "author": "TheMonDon <bforster48@gmail.com>",
   "contributors": [
-    "bunnywasnothere (https://github.com/Nuckyz)"
+    {
+      "name": "bunnywasnothere",
+      "url": "https://github.com/ShootDot"
+    }
   ],
-  "license": "GNU GPLv3",
+  "license": "GPL-3.0",
   "files": [
     "dist/**/*.js",
     "dist/**/*.d.ts",
@@ -63,5 +66,12 @@
   },
   "overrides": {
     "react": "$react"
+  },
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "bugs": {
+    "url": "https://github.com/TheMonDon/oceanic-transcripts/issues"
   }
 }
