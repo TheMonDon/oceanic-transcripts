@@ -1,6 +1,6 @@
-import type { APIEmbedField } from 'discord.js';
+import type { EmbedField } from 'oceanic.js';
 
-export function calculateInlineIndex(fields: APIEmbedField[], currentFieldIndex: number) {
+export function calculateInlineIndex(fields: EmbedField[], currentFieldIndex: number) {
   const startIndex = currentFieldIndex - 1;
 
   for (let i = startIndex; i >= 0; i--) {

@@ -1,9 +1,9 @@
 {
-  "name": "discord-html-transcripts",
-  "version": "3.2.0",
-  "description": "A nicely formatted html transcript generator for discord.js.",
+  "name": "oceanic-transcripts",
+  "version": "1.0.0",
+  "description": "A nicely formatted html transcript generator for oceanic.js.",
   "main": "dist/index.js",
-  "homepage": "https://github.com/ItzDerock/discord-html-transcripts",
+  "homepage": "https://github.com/TheMonDon/oceanic-transcripts",
   "types": "./dist/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -15,17 +15,21 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ItzDerock/discord-html-transcripts.git"
+    "url": "git+https://github.com/TheMonDon/oceanic-transcripts.git"
   },
   "keywords": [
-    "discord.js",
-    "discord.js-transcripts",
-    "discord.js-html-transcripts",
+    "oceanic",
+    "oceanic.js",
+    "oceanic.js-transcripts",
+    "oceanic.js-html-transcripts",
     "html-transcripts",
     "discord-html-transcripts",
     "discord-transcripts"
   ],
-  "author": "Derock <derock@derock.dev>",
+  "author": "TheMonDon <bforster48@gmail.com>",
+  "contributors": [
+    "bunnywasnothere (https://github.com/Nuckyz)"
+  ],
   "license": "GNU GPLv3",
   "files": [
     "dist/**/*.js",
@@ -38,7 +42,6 @@
     "@types/react-dom": "^18.2.18",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
-    "discord.js": "^14.14.1",
     "dotenv": "^16.3.1",
     "eslint": "^8.56.0",
     "husky": "^8.0.3",
@@ -51,14 +54,12 @@
     "@derockdev/discord-components-core": "^3.6.1",
     "@derockdev/discord-components-react": "^3.6.1",
     "discord-markdown-parser": "~1.1.0",
+    "oceanic.js": "^1.11.0",
     "react": "0.0.0-experimental-6639ed3b3-20240111",
     "react-dom": "0.0.0-experimental-6639ed3b3-20240111",
     "simple-markdown": "^0.7.3",
     "twemoji": "^14.0.2",
     "undici": "^5.28.2"
-  },
-  "peerDependencies": {
-    "discord.js": "^14.0.0 || ^15.0.0"
   },
   "overrides": {
     "react": "$react"

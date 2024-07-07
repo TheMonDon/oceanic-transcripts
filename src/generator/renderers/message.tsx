@@ -7,7 +7,8 @@ import {
   DiscordThread,
   DiscordThreadMessage,
 } from '@derockdev/discord-components-react';
-import type { Message as MessageType } from 'discord.js';
+import type { Message as MessageType} from 'oceanic.js';
+import { MessageTypes } from 'oceanic.js';
 import React from 'react';
 import type { RenderMessageContext } from '..';
 import { parseDiscordEmoji } from '../../utils/utils';
@@ -25,16 +26,24 @@ export default async function DiscordMessage({
   message: MessageType;
   context: RenderMessageContext;
 }) {
-  if (message.system) return <DiscordSystemMessage message={message} />;
+  if (
+    ![
+      MessageTypes.DEFAULT,
+      MessageTypes.REPLY,
+      MessageTypes.CHAT_INPUT_COMMAND,
+      MessageTypes.CONTEXT_MENU_COMMAND,
+    ].includes(message.type)
+  )
+    return <DiscordSystemMessage message={message} />;
 
-  const isCrosspost = message.reference && message.reference.guildId !== message.guild?.id;
+  const isCrosspost = message.referencedMessage && message.referencedMessage.guildID !== message.guild?.id;
 
   return (
     <DiscordMessageComponent
       id={`m-${message.id}`}
       timestamp={message.createdAt.toISOString()}
       key={message.id}
-      edited={message.editedAt !== null}
+      edited={message.editedTimestamp !== null}
       server={isCrosspost ?? undefined}
       highlight={message.mentions.everyone}
       profile={message.author.id}
@@ -43,11 +52,11 @@ export default async function DiscordMessage({
       <MessageReply message={message} context={context} />
 
       {/* slash command */}
-      {message.interaction && (
+      {message.interactionMetadata && (
         <DiscordCommand
           slot="reply"
-          profile={message.interaction.user.id}
-          command={'/' + message.interaction.commandName}
+          profile={message.interactionMetadata.user.id}
+          command={'/' + message.interactionMetadata.name}
         />
       )}
 
@@ -55,7 +64,7 @@ export default async function DiscordMessage({
       {message.content && (
         <MessageContent
           content={message.content}
-          context={{ ...context, type: message.webhookId ? RenderType.WEBHOOK : RenderType.NORMAL }}
+          context={{ ...context, type: message.webhookID ? RenderType.WEBHOOK : RenderType.NORMAL }}
         />
       )}
 
@@ -77,9 +86,9 @@ export default async function DiscordMessage({
       )}
 
       {/* reactions */}
-      {message.reactions.cache.size > 0 && (
+      {message.reactions.length > 0 && (
         <DiscordReactions slot="reactions">
-          {message.reactions.cache.map((reaction, id) => (
+          {message.reactions.map((reaction, id) => (
             <DiscordReaction
               key={`${message.id}r${id}`}
               name={reaction.emoji.name!}
@@ -91,7 +100,7 @@ export default async function DiscordMessage({
       )}
 
       {/* threads */}
-      {message.hasThread && message.thread && (
+      {message.thread && (
         <DiscordThread
           slot="thread"
           name={message.thread.name}

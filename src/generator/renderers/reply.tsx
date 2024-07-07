@@ -1,33 +1,42 @@
 import { DiscordReply } from '@derockdev/discord-components-react';
-import { type Message, UserFlags } from 'discord.js';
+import { type Message, UserFlags, ChannelTypes } from 'oceanic.js';
 import type { RenderMessageContext } from '..';
 import React from 'react';
 import MessageContent, { RenderType } from './content';
 
 export default async function MessageReply({ message, context }: { message: Message; context: RenderMessageContext }) {
-  if (!message.reference) return null;
-  if (message.reference.guildId !== message.guild?.id) return null;
+  if (!message.referencedMessage) return null;
+  if (message.referencedMessage.guildID !== message.guild?.id) return null;
 
-  const referencedMessage = context.messages.find((m) => m.id === message.reference!.messageId);
+  const referencedMessage = context.messages.find((m) => m.id === message.referencedMessage!.id);
 
   if (!referencedMessage) return <DiscordReply slot="reply">Message could not be loaded.</DiscordReply>;
 
-  const isCrosspost = referencedMessage.reference && referencedMessage.reference.guildId !== message.guild?.id;
-  const isCommand = referencedMessage.interaction !== null;
+  const isCrosspost =
+    referencedMessage.referencedMessage && referencedMessage.referencedMessage.guildID !== message.guild?.id;
+  const isCommand = referencedMessage.interactionMetadata !== null;
+  const roles = await message.guild.getRoles();
+  const highestRoleColor = roles
+    .sort((a, b) => b.position - a.position)
+    .find((role) => message.member?.roles.includes(role.id) && role.color);
 
   return (
     <DiscordReply
       slot="reply"
-      edited={!isCommand && referencedMessage.editedAt !== null}
+      edited={!isCommand && referencedMessage.editedTimestamp !== null}
       attachment={referencedMessage.attachments.size > 0}
       author={
-        referencedMessage.member?.nickname ?? referencedMessage.author.displayName ?? referencedMessage.author.username
+        referencedMessage.member?.nick ?? referencedMessage.author.globalName ?? referencedMessage.author.username
       }
-      avatar={referencedMessage.author.avatarURL({ size: 32 }) ?? undefined}
-      roleColor={referencedMessage.member?.displayHexColor ?? undefined}
+      avatar={referencedMessage.author.avatarURL('png', 32) ?? undefined}
+      roleColor={'#' + highestRoleColor?.color.toString(16).padStart(6, '0') ?? undefined}
       bot={!isCrosspost && referencedMessage.author.bot}
-      verified={referencedMessage.author.flags?.has(UserFlags.VerifiedBot)}
-      op={message?.channel?.isThread?.() && referencedMessage.author.id === message?.channel?.ownerId}
+      verified={(referencedMessage.author.publicFlags & UserFlags.VERIFIED_BOT) !== 0}
+      op={
+        message?.channel?.type === ChannelTypes.PRIVATE_THREAD ||
+        (message?.channel?.type === ChannelTypes.PUBLIC_THREAD &&
+          referencedMessage.author.id === message?.channel?.ownerID)
+      }
       server={isCrosspost ?? undefined}
       command={isCommand}
     >

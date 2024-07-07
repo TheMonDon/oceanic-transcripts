@@ -1,39 +1,27 @@
-import * as discord from 'discord.js';
 import { createTranscript } from '../src';
+import { Client } from 'oceanic.js';
 
-import { config } from 'dotenv';
-config();
-
-const { GuildMessages, Guilds, MessageContent } = discord.GatewayIntentBits;
-
-const client = new discord.Client({
-  intents: [GuildMessages, Guilds, MessageContent],
+const client = new Client({
+  auth: `Bot (TOKEN)`,
+  gateway: { intents: ['GUILDS', 'GUILD_MESSAGES', 'MESSAGE_CONTENT'] },
 });
 
 client.on('ready', async () => {
-  console.log('Fetching channel: ', process.env.CHANNEL!);
-  const channel = await client.channels.fetch(process.env.CHANNEL!);
-
-  if (!channel || !channel.isTextBased()) {
-    console.error('Invalid channel provided.');
-    process.exit(1);
-  }
-
-  console.time('transcript');
-
-  const attachment = await createTranscript(channel, {
-    // Filter bot messages
-    filter: (message) => !message.author.bot,
-  });
-
-  console.timeEnd('transcript');
-
-  await channel.send({
-    files: [attachment],
-  });
-
-  client.destroy();
-  process.exit(0);
+  console.log('Ready!');
 });
 
-client.login(process.env.TOKEN!);
+client.on('messageCreate', async (message) => {
+  if (message.content === '!t') {
+    console.log('Generating transcript');
+    console.time('transcript');
+    const attachment = await createTranscript(message.channel!);
+    console.timeEnd('transcript');
+    console.log('Generated transcript');
+    await message.channel?.createMessage({
+      files: [attachment],
+      content: 'Here is the transcript!',
+    });
+  }
+});
+
+client.connect();

@@ -1,6 +1,6 @@
 import { DiscordAttachment, DiscordAttachments } from '@derockdev/discord-components-react';
 import React from 'react';
-import type { Attachment as AttachmentType, Message } from 'discord.js';
+import type { Attachment as AttachmentType, Message } from 'oceanic.js';
 import type { RenderMessageContext } from '..';
 import type { AttachmentTypes } from '../../types';
 import { downloadImageToDataURL, formatBytes } from '../../utils/utils';
@@ -42,7 +42,7 @@ export async function Attachment({
   context: RenderMessageContext;
 }) {
   let url = attachment.url;
-  const name = attachment.name;
+  const name = attachment.filename;
   const width = attachment.width;
   const height = attachment.height;
 

@@ -1,5 +1,5 @@
 ---
-description: Welcome to the official discord-html-transcripts documentation and guide.
+description: Welcome to the official oceanic-transcripts documentation and guide.
 ---
 
 # 🏠 Home
@@ -8,19 +8,19 @@ Discord HTML Transcripts is a node.js module to generate nice-looking HTML trans
 
 ## Socials
 
-Join the [Discord Server](https://discord.gg/VgMxx2NAu4) and create a new forum post if you need help. You can also follow the announcement channel to get updates whenever a new version is released.
+Join the [Discord Server](https://discord.gg/XvHzUNZDdR) and create a new forum post if you need help. You can also follow the announcement channel to get updates whenever a new version is released.
 
-If you find a bug, please create a post on [GitHub](https://github.com/ItzDerock/discord-html-transcripts/issues).
+If you find a bug, please create a post on [GitHub](https://github.com/TheMonDon/oceanic-transcripts/issues).
 
 ## Getting Started
 
-To get started with `discord-html-transcripts` install the module and ensure you are running `discord.js^14`
+To get started with `oceanic-transcripts` install the module and ensure you are running `oceanic.js^1.11.0`
 
 {% tabs %}
 {% tab title="NPM" %}
 
 ```shell
-npm install --save discord-html-transcripts
+npm install --save oceanic-transcripts
 ```
 
 {% endtab %}
@@ -28,7 +28,7 @@ npm install --save discord-html-transcripts
 {% tab title="PNPM" %}
 
 ```shell
-pnpm i -S discord-html-transcripts`
+pnpm i -S oceanic-transcripts`
 ```
 
 {% endtab %}
@@ -36,7 +36,7 @@ pnpm i -S discord-html-transcripts`
 {% tab title="Yarn" %}
 
 ```shell
-yarn add discord-html-transcripts
+yarn add oceanic-transcripts
 ```
 
 {% endtab %}
@@ -46,14 +46,8 @@ yarn add discord-html-transcripts
 
 The code to this module can be found on GitHub:
 
-{% embed url="https://github.com/ItzDerock/discord-html-transcripts" %}
-ItzDerock/discord-html-transcripts
+{% embed url="https://github.com/TheMonDon/oceanic-transcripts" %}
+TheMonDon/oceanic-transcripts
 {% endembed %}
 
 The markdown files to this documentation can also be found there.
-
-## Useful Links
-
-{% content-ref url="broken-reference" %}
-[Broken link](broken-reference)
-{% endcontent-ref %}

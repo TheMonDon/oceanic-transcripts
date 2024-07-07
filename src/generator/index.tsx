@@ -1,4 +1,11 @@
-import { type Awaitable, type Channel, type Message, type Role, type User } from 'discord.js';
+import {
+  ChannelTypes,
+  type TextableChannel,
+  type AnyTextableChannel,
+  type Message,
+  type Role,
+  type User,
+} from 'oceanic.js';
 import ReactDOMServer from 'react-dom/server';
 import React from 'react';
 import { buildProfiles } from '../utils/buildProfiles';
@@ -21,12 +28,12 @@ try {
 
 export type RenderMessageContext = {
   messages: Message[];
-  channel: Channel;
+  channel: TextableChannel | AnyTextableChannel;
 
   callbacks: {
-    resolveChannel: (channelId: string) => Awaitable<Channel | null>;
-    resolveUser: (userId: string) => Awaitable<User | null>;
-    resolveRole: (roleId: string) => Awaitable<Role | null>;
+    resolveChannel: (channelId: string) => Promise<TextableChannel | AnyTextableChannel | null>;
+    resolveUser: (userId: string) => Promise<User | null>;
+    resolveRole: (roleId: string) => Promise<Role | null>;
   };
 
   poweredBy?: boolean;
@@ -38,7 +45,7 @@ export type RenderMessageContext = {
 
 export default async function render({ messages, channel, callbacks, ...options }: RenderMessageContext) {
   const profiles = buildProfiles(messages);
-
+  channel.type;
   // NOTE: this renders a STATIC site with no interactivity
   // if interactivity is needed, switch to renderToPipeableStream and use hydrateRoot on client.
   const stream = ReactDOMServer.renderToStaticNodeStream(
@@ -53,15 +60,15 @@ export default async function render({ messages, channel, callbacks, ...options 
           type="image/png"
           href={
             options.favicon === 'guild'
-              ? channel.isDMBased()
+              ? channel.type === ChannelTypes.DM
                 ? undefined
-                : channel.guild.iconURL({ size: 16, extension: 'png' }) ?? undefined
+                : channel.guild.iconURL('png', 16) ?? undefined
               : options.favicon
           }
         />
 
         {/* title */}
-        <title>{channel.isDMBased() ? 'Direct Messages' : channel.name}</title>
+        <title>{channel.type === ChannelTypes.DM ? 'Direct Messages' : channel.name}</title>
 
         {/* message reference handler */}
         <script

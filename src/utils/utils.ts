@@ -1,4 +1,4 @@
-import type { APIMessageComponentEmoji, Emoji } from 'discord.js';
+import type { NullablePartialEmoji, PartialEmoji } from 'oceanic.js';
 import { request } from 'undici';
 import twemoji from 'twemoji';
 
@@ -18,9 +18,9 @@ export function formatBytes(bytes: number, decimals = 2) {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 }
 
-export function parseDiscordEmoji(emoji: Emoji | APIMessageComponentEmoji) {
+export function parseDiscordEmoji(emoji: PartialEmoji | NullablePartialEmoji) {
   if (emoji.id) {
-    return `https://cdn.discordapp.com/emojis/${emoji.id}.${emoji.animated ? 'gif' : 'png'}`;
+    return `https://cdn.discordapp.com/emojis/${emoji.id}.${(emoji as PartialEmoji).animated ? 'gif' : 'png'}`;
   }
 
   const codepoints = twemoji.convert

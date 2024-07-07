@@ -1,5 +1,5 @@
 import { DiscordHeader, DiscordMessages as DiscordMessagesComponent } from '@derockdev/discord-components-react';
-import { ChannelType } from 'discord.js';
+import { ChannelTypes } from 'oceanic.js';
 import React, { Suspense } from 'react';
 import type { RenderMessageContext } from '.';
 import MessageContent, { RenderType } from './renderers/content';
@@ -17,25 +17,20 @@ export default async function DiscordMessages({ messages, channel, callbacks, ..
     <DiscordMessagesComponent style={{ minHeight: '100vh' }}>
       {/* header */}
       <DiscordHeader
-        guild={channel.isDMBased() ? 'Direct Messages' : channel.guild.name}
-        channel={
-          channel.isDMBased()
-            ? channel.type === ChannelType.DM
-              ? channel.recipient?.tag ?? 'Unknown Recipient'
-              : 'Unknown Recipient'
-            : channel.name
-        }
-        icon={channel.isDMBased() ? undefined : channel.guild.iconURL({ size: 128 }) ?? undefined}
+        guild={channel.type === ChannelTypes.DM ? 'Direct Messages' : channel.guild.name}
+        channel={channel.type === ChannelTypes.DM ? channel.recipient?.tag ?? 'Unknown Recipient' : channel.name}
+        icon={channel.type === ChannelTypes.DM ? undefined : channel.guild.iconURL('png', 128) ?? undefined}
       >
-        {channel.isThread() ? (
+        {channel.type === ChannelTypes.PUBLIC_THREAD || channel.type === ChannelTypes.PRIVATE_THREAD ? (
           `Thread channel in ${channel.parent?.name ?? 'Unknown Channel'}`
-        ) : channel.isDMBased() ? (
+        ) : channel.type === ChannelTypes.DM ? (
           `Direct Messages`
-        ) : channel.isVoiceBased() ? (
+        ) : channel.type === ChannelTypes.GUILD_VOICE ? (
           `Voice Text Channel for ${channel.name}`
-        ) : channel.type === ChannelType.GuildCategory ? (
-          `Category Channel`
-        ) : 'topic' in channel && channel.topic ? (
+        ) : // channel.type === ChannelType.GuildCategory ? (
+        //   `Category Channel`
+        // ) :
+        'topic' in channel && channel.topic ? (
           <MessageContent
             content={channel.topic}
             context={{ messages, channel, callbacks, type: RenderType.REPLY, ...options }}

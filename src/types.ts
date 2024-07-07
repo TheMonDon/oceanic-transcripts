@@ -1,4 +1,4 @@
-import type { AttachmentBuilder, Message } from 'discord.js';
+import type { Message, File } from 'oceanic.js';
 import type { RenderMessageContext } from './generator';
 
 export type AttachmentTypes = 'audio' | 'video' | 'image' | 'file';
@@ -13,7 +13,7 @@ export type ObjectType<T extends ExportReturnType> = T extends ExportReturnType.
   ? Buffer
   : T extends ExportReturnType.String
   ? string
-  : AttachmentBuilder;
+  : File;
 
 export type GenerateFromMessagesOptions<T extends ExportReturnType> = Partial<{
   /**
@@ -77,6 +77,6 @@ export type CreateTranscriptOptions<T extends ExportReturnType> = Partial<
      * Filter messages of the channel
      * @default (() => true)
      */
-    filter: (message: Message<boolean>) => boolean;
+    filter: (message: Message) => boolean;
   }
 >;

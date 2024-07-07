@@ -1,29 +1,38 @@
 import { DiscordReaction, DiscordReactions, DiscordSystemMessage } from '@derockdev/discord-components-react';
-import { MessageType, type GuildMember, type Message, type User } from 'discord.js';
+import { MessageTypes, type Member, type Message, type User } from 'oceanic.js';
 import React from 'react';
 import { parseDiscordEmoji } from '../../utils/utils';
 
 export default async function SystemMessage({ message }: { message: Message }) {
+  const roles = await message.guild?.getRoles();
+  const highestRoleColor = roles
+    ?.sort((a, b) => b.position - a.position)
+    .find((role) => message.member?.roles.includes(role.id) && role.color);
+
   switch (message.type) {
-    case MessageType.RecipientAdd:
-    case MessageType.UserJoin:
+    case MessageTypes.RECIPIENT_ADD:
+    case MessageTypes.USER_JOIN:
       return (
         <DiscordSystemMessage id={`m-${message.id}`} key={message.id} type="join">
-          <JoinMessage member={message.member} fallbackUser={message.author} />
+          <JoinMessage
+            member={message.member}
+            color={'#' + highestRoleColor?.color.toString(16).padStart(6, '0')}
+            fallbackUser={message.author}
+          />
         </DiscordSystemMessage>
       );
 
-    case MessageType.ChannelPinnedMessage:
+    case MessageTypes.CHANNEL_PINNED_MESSAGE:
       return (
         <DiscordSystemMessage id={`m-${message.id}`} key={message.id} type="pin">
-          <Highlight color={message.member?.roles.color?.hexColor}>
-            {message.author.displayName ?? message.author.username}
+          <Highlight color={'#' + highestRoleColor?.color.toString(16).padStart(6, '0')}>
+            {message.author.globalName ?? message.author.username}
           </Highlight>{' '}
-          pinned <i data-goto={message.reference?.messageId}>a message</i> to this channel.
+          pinned <i data-goto={message.referencedMessage?.id}>a message</i> to this channel.
           {/* reactions */}
-          {message.reactions.cache.size > 0 && (
+          {message.reactions.length > 0 && (
             <DiscordReactions slot="reactions">
-              {message.reactions.cache.map((reaction, id) => (
+              {message.reactions.map((reaction, id) => (
                 <DiscordReaction
                   key={`${message.id}r${id}`}
                   name={reaction.emoji.name!}
@@ -36,26 +45,26 @@ export default async function SystemMessage({ message }: { message: Message }) {
         </DiscordSystemMessage>
       );
 
-    case MessageType.GuildBoost:
-    case MessageType.GuildBoostTier1:
-    case MessageType.GuildBoostTier2:
-    case MessageType.GuildBoostTier3:
+    case MessageTypes.GUILD_BOOST:
+    case MessageTypes.GUILD_BOOST_TIER_1:
+    case MessageTypes.GUILD_BOOST_TIER_2:
+    case MessageTypes.GUILD_BOOST_TIER_3:
       return (
         <DiscordSystemMessage id={`m-${message.id}`} key={message.id} type="boost">
-          <Highlight color={message.member?.roles.color?.hexColor}>
-            {message.author.displayName ?? message.author.username}
+          <Highlight color={'#' + highestRoleColor?.color.toString(16).padStart(6, '0')}>
+            {message.author.globalName ?? message.author.username}
           </Highlight>{' '}
           boosted the server!
         </DiscordSystemMessage>
       );
 
-    case MessageType.ThreadStarterMessage:
+    case MessageTypes.THREAD_STARTER_MESSAGE:
       return (
         <DiscordSystemMessage id={`ms-${message.id}`} key={message.id} type="thread">
-          <Highlight color={message.member?.roles.color?.hexColor}>
-            {message.author.displayName ?? message.author.username}
+          <Highlight color={'#' + highestRoleColor?.color.toString(16).padStart(6, '0')}>
+            {message.author.globalName ?? message.author.username}
           </Highlight>{' '}
-          started a thread: <i data-goto={message.reference?.messageId}>{message.content}</i>
+          started a thread: <i data-goto={message.referencedMessage?.id}>{message.content}</i>
         </DiscordSystemMessage>
       );
 
@@ -108,15 +117,23 @@ const allJoinMessages = [
   "Hello. Is it {user} you're looking for?",
 ];
 
-export function JoinMessage({ member, fallbackUser }: { member: GuildMember | null; fallbackUser: User }) {
+export function JoinMessage({
+  member,
+  color,
+  fallbackUser,
+}: {
+  member: Member | null | undefined;
+  color: string;
+  fallbackUser: User;
+}) {
   const randomMessage = allJoinMessages[Math.floor(Math.random() * allJoinMessages.length)];
 
   return randomMessage
     .split('{user}')
     .flatMap((item, i) => [
       item,
-      <Highlight color={member?.roles.color?.hexColor} key={i}>
-        {member?.nickname ?? fallbackUser.displayName ?? fallbackUser.username}
+      <Highlight color={color} key={i}>
+        {member?.nick ?? fallbackUser.globalName ?? fallbackUser.username}
       </Highlight>,
     ])
     .slice(0, -1);

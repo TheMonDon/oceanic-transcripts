@@ -11,7 +11,7 @@ import {
   DiscordUnderlined,
 } from '@derockdev/discord-components-react';
 import parse, { type RuleTypesExtended } from 'discord-markdown-parser';
-import { ChannelType, type APIMessageComponentEmoji } from 'discord.js';
+import { ChannelTypes, type NullablePartialEmoji } from 'oceanic.js';
 import React from 'react';
 import type { ASTNode } from 'simple-markdown';
 import { ASTNode as MessageASTNodes } from 'simple-markdown';
@@ -132,8 +132,10 @@ export async function MessageSingleASTNode({ node, context }: { node: SingleASTN
       const channel = await context.callbacks.resolveChannel(id);
 
       return (
-        <DiscordMention type={channel ? (channel.isDMBased() ? 'channel' : getChannelType(channel.type)) : 'channel'}>
-          {channel ? (channel.isDMBased() ? 'DM Channel' : channel.name) : `<#${id}>`}
+        <DiscordMention
+          type={channel ? (channel.type === ChannelTypes.DM ? 'channel' : getChannelType(channel.type)) : 'channel'}
+        >
+          {channel ? (channel.type == ChannelTypes.DM ? 'DM Channel' : channel.name) : `<#${id}>`}
         </DiscordMention>
       );
     }
@@ -143,7 +145,10 @@ export async function MessageSingleASTNode({ node, context }: { node: SingleASTN
       const role = await context.callbacks.resolveRole(id);
 
       return (
-        <DiscordMention type="role" color={context.type === RenderType.REPLY ? undefined : role?.hexColor}>
+        <DiscordMention
+          type="role"
+          color={context.type === RenderType.REPLY ? undefined : '#' + role?.color.toString(16).padStart(6, '0')}
+        >
           {role ? role.name : `<@&${id}>`}
         </DiscordMention>
       );
@@ -153,7 +158,7 @@ export async function MessageSingleASTNode({ node, context }: { node: SingleASTN
       const id = node.id as string;
       const user = await context.callbacks.resolveUser(id);
 
-      return <DiscordMention type="user">{user ? user.displayName ?? user.username : `<@${id}>`}</DiscordMention>;
+      return <DiscordMention type="user">{user ? user.globalName ?? user.username : `<@${id}>`}</DiscordMention>;
     }
 
     case 'here':
@@ -220,7 +225,7 @@ export async function MessageSingleASTNode({ node, context }: { node: SingleASTN
       return (
         <DiscordCustomEmoji
           name={node.name}
-          url={parseDiscordEmoji(node as APIMessageComponentEmoji)}
+          url={parseDiscordEmoji(node as NullablePartialEmoji)}
           embedEmoji={context.type === RenderType.EMBED}
           largeEmoji={context._internal?.largeEmojis}
         />
@@ -240,20 +245,20 @@ export async function MessageSingleASTNode({ node, context }: { node: SingleASTN
   }
 }
 
-export function getChannelType(channelType: ChannelType): 'channel' | 'voice' | 'thread' | 'forum' {
+export function getChannelType(channelType: ChannelTypes): 'channel' | 'voice' | 'thread' | 'forum' {
   switch (channelType) {
-    case ChannelType.GuildCategory:
-    case ChannelType.GuildAnnouncement:
-    case ChannelType.GuildText:
+    case ChannelTypes.GUILD_CATEGORY:
+    case ChannelTypes.GUILD_ANNOUNCEMENT:
+    case ChannelTypes.GUILD_TEXT:
       return 'channel';
-    case ChannelType.GuildVoice:
-    case ChannelType.GuildStageVoice:
+    case ChannelTypes.GUILD_VOICE:
+    case ChannelTypes.GUILD_STAGE_VOICE:
       return 'voice';
-    case ChannelType.PublicThread:
-    case ChannelType.PrivateThread:
-    case ChannelType.AnnouncementThread:
+    case ChannelTypes.PUBLIC_THREAD:
+    case ChannelTypes.PRIVATE_THREAD:
+    case ChannelTypes.ANNOUNCEMENT_THREAD:
       return 'thread';
-    case ChannelType.GuildForum:
+    case ChannelTypes.GUILD_FORUM:
       return 'forum';
     default:
       return 'channel';

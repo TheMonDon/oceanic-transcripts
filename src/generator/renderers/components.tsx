@@ -1,9 +1,10 @@
 import { DiscordActionRow, DiscordButton } from '@derockdev/discord-components-react';
-import { ButtonStyle, ComponentType, type MessageActionRowComponent, type ActionRow } from 'discord.js';
+import type { MessageComponent } from 'oceanic.js';
+import { ButtonStyles, ComponentTypes, type ActionRowBase } from 'oceanic.js';
 import React from 'react';
 import { parseDiscordEmoji } from '../../utils/utils';
 
-export default function ComponentRow({ row, id }: { row: ActionRow<MessageActionRowComponent>; id: number }) {
+export default function ComponentRow({ row, id }: { row: ActionRowBase<MessageComponent>; id: number }) {
   return (
     <DiscordActionRow key={id}>
       {row.components.map((component, id) => (
@@ -14,20 +15,20 @@ export default function ComponentRow({ row, id }: { row: ActionRow<MessageAction
 }
 
 const ButtonStyleMapping = {
-  [ButtonStyle.Primary]: 'primary',
-  [ButtonStyle.Secondary]: 'secondary',
-  [ButtonStyle.Success]: 'success',
-  [ButtonStyle.Danger]: 'destructive',
-  [ButtonStyle.Link]: 'secondary',
+  [ButtonStyles.PRIMARY]: 'primary',
+  [ButtonStyles.SECONDARY]: 'secondary',
+  [ButtonStyles.SUCCESS]: 'success',
+  [ButtonStyles.DANGER]: 'destructive',
+  [ButtonStyles.LINK]: 'secondary',
 } as const;
 
-export function Component({ component, id }: { component: MessageActionRowComponent; id: number }) {
-  if (component.type === ComponentType.Button) {
+export function Component({ component, id }: { component: MessageComponent; id: number }) {
+  if (component.type === ComponentTypes.BUTTON) {
     return (
       <DiscordButton
         key={id}
         type={ButtonStyleMapping[component.style]}
-        url={component.url ?? undefined}
+        url={component.style === ButtonStyles.LINK ? component.url : undefined}
         emoji={component.emoji ? parseDiscordEmoji(component.emoji) : undefined}
       >
         {component.label}

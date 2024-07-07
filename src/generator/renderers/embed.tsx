@@ -5,7 +5,7 @@ import {
   DiscordEmbedFields,
   DiscordEmbedFooter,
 } from '@derockdev/discord-components-react';
-import type { Embed, Message } from 'discord.js';
+import type { Embed, Message } from 'oceanic.js';
 import React from 'react';
 import type { RenderMessageContext } from '..';
 import { calculateInlineIndex } from '../../utils/embeds';
@@ -25,7 +25,7 @@ export async function DiscordEmbed({ embed, context }: { embed: Embed; context: 
       authorImage={embed.author?.proxyIconURL ?? embed.author?.iconURL}
       authorName={embed.author?.name}
       authorUrl={embed.author?.url}
-      color={embed.hexColor ?? undefined}
+      color={'#' + embed.color?.toString(16).padStart(6, '0') ?? undefined}
       image={embed.image?.proxyURL ?? embed.image?.url}
       thumbnail={embed.thumbnail?.proxyURL ?? embed.thumbnail?.url}
       url={embed.url ?? undefined}
@@ -38,14 +38,14 @@ export async function DiscordEmbed({ embed, context }: { embed: Embed; context: 
       )}
 
       {/* Fields */}
-      {embed.fields.length > 0 && (
+      {embed.fields && embed.fields.length > 0 && (
         <DiscordEmbedFields slot="fields">
-          {embed.fields.map(async (field, id) => (
+          {embed.fields!.map(async (field, id) => (
             <DiscordEmbedField
               key={`${context.message.id}-e-${context.index}-f-${id}`}
               fieldTitle={field.name}
               inline={field.inline}
-              inlineIndex={calculateInlineIndex(embed.fields, id)}
+              inlineIndex={calculateInlineIndex(embed.fields!, id)}
             >
               <MessageContent content={field.value} context={{ ...context, type: RenderType.EMBED }} />
             </DiscordEmbedField>
