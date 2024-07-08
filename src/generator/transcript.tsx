@@ -57,8 +57,8 @@ export default async function DiscordMessages({ messages, channel, callbacks, ..
         {options.poweredBy ? (
           <span style={{ textAlign: 'center' }}>
             Powered by{' '}
-            <a href="https://github.com/ItzDerock/discord-html-transcripts" style={{ color: 'lightblue' }}>
-              discord-html-transcripts
+            <a href="https://github.com/TheMonDon/oceanic-transcripts" style={{ color: 'lightblue' }}>
+              oceanic-transcripts
             </a>
             .
           </span>
