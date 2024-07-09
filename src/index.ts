@@ -89,7 +89,7 @@ export async function createTranscript<T extends ExportReturnType = ExportReturn
   options: CreateTranscriptOptions<T> = {}
 ): Promise<ObjectType<T>> {
   // validate type
-  if (!TextableChannelTypes[channel.type]) {
+  if (!TextableChannelTypes.includes(channel.type)) {
     throw new TypeError(`Provided channel must be text-based, received ${channel.type}`);
   }
 
