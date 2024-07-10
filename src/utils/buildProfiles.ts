@@ -18,7 +18,7 @@ export async function buildProfiles(messages: Message[]) {
   for (const message of messages) {
     // add all users
     const author = message.author;
-    if (!profiles[author.id]) {
+    if (!profiles[author.id] || !profiles[author.id]?.roleName) {
       // add profile
       profiles[author.id] = await buildProfile(message.member, author);
     }

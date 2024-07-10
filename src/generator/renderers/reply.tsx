@@ -5,19 +5,21 @@ import React from 'react';
 import MessageContent, { RenderType } from './content';
 
 export default async function MessageReply({ message, context }: { message: Message; context: RenderMessageContext }) {
-  if (!message.referencedMessage) return null;
-  if (message.referencedMessage.guildID !== message.guild?.id) return null;
-
+  if (!message.messageReference) return null;
+  if (message.messageReference.guildID !== message.guildID) return null;
+  
   const referencedMessage = context.messages.find((m) => m.id === message.referencedMessage!.id);
-
+  
   if (!referencedMessage) return <DiscordReply slot="reply">Message could not be loaded.</DiscordReply>;
-
   const isCrosspost =
-    referencedMessage.referencedMessage && referencedMessage.referencedMessage.guildID !== message.guild?.id;
-  const isCommand = referencedMessage.interactionMetadata !== null;
-  const roles = await message.guild.getRoles();
+    referencedMessage.referencedMessage && 
+    referencedMessage.referencedMessage.guildID && 
+    message.guildID && 
+    referencedMessage.referencedMessage.guildID !== message.guildID;
+  const isCommand = referencedMessage.interactionMetadata !== undefined;
+  const roles = await message.guild?.getRoles();
   const highestRoleColor = roles
-    .sort((a, b) => b.position - a.position)
+    ?.sort((a, b) => b.position - a.position)
     .find((role) => message.member?.roles.includes(role.id) && role.color);
 
   return (
@@ -37,7 +39,7 @@ export default async function MessageReply({ message, context }: { message: Mess
         (message?.channel?.type === ChannelTypes.PUBLIC_THREAD &&
           referencedMessage.author.id === message?.channel?.ownerID)
       }
-      server={isCrosspost ?? undefined}
+      server={!!isCrosspost}
       command={isCommand}
     >
       {referencedMessage.content ? (

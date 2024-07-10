@@ -36,15 +36,18 @@ export default async function DiscordMessage({
   )
     return <DiscordSystemMessage message={message} />;
 
-  const isCrosspost = message.referencedMessage && message.referencedMessage.guildID !== message.guild?.id;
-
+  const isCrosspost =
+    message.referencedMessage &&
+    message.referencedMessage.guildID &&
+    message.guildID &&
+    message.referencedMessage.guildID != message.guildID;
   return (
     <DiscordMessageComponent
       id={`m-${message.id}`}
       timestamp={message.createdAt.toISOString()}
       key={message.id}
       edited={message.editedTimestamp !== null}
-      server={isCrosspost ?? undefined}
+      server={!!isCrosspost}
       highlight={message.mentions.everyone}
       profile={message.author.id}
     >

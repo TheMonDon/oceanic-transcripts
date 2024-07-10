@@ -45,7 +45,6 @@ export type RenderMessageContext = {
 
 export default async function render({ messages, channel, callbacks, ...options }: RenderMessageContext) {
   const profiles = buildProfiles(messages);
-  channel.type;
   // NOTE: this renders a STATIC site with no interactivity
   // if interactivity is needed, switch to renderToPipeableStream and use hydrateRoot on client.
   const stream = ReactDOMServer.renderToStaticNodeStream(
