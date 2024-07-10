@@ -14,6 +14,7 @@ import {
   type GenerateFromMessagesOptions,
   type ObjectType,
 } from './types';
+import { buildProfiles } from './utils/buildProfiles';
 
 // re-export component for custom rendering
 export { default as DiscordMessages } from './generator/transcript';
@@ -32,12 +33,13 @@ export async function generateFromMessages<T extends ExportReturnType = ExportRe
 ): Promise<ObjectType<T>> {
   // turn messages into an array
   const transformedMessages = messages instanceof Collection ? Array.from(messages.values()) : messages;
-
+  const profiles = await buildProfiles(transformedMessages);
   // const startTime = process.hrtime();
 
   // render the messages
   const html = await DiscordMessages({
     messages: transformedMessages,
+    profiles,
     channel,
     saveImages: options.saveImages ?? false,
     callbacks: {

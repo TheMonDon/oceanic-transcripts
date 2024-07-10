@@ -12,7 +12,7 @@ import DiscordMessage from './renderers/message';
  * @param props Messages, channel details, callbacks, etc.
  * @returns
  */
-export default async function DiscordMessages({ messages, channel, callbacks, ...options }: RenderMessageContext) {
+export default async function DiscordMessages({ messages, profiles, channel, callbacks, ...options }: RenderMessageContext) {
   return (
     <DiscordMessagesComponent style={{ minHeight: '100vh' }}>
       {/* header */}
@@ -33,7 +33,7 @@ export default async function DiscordMessages({ messages, channel, callbacks, ..
         'topic' in channel && channel.topic ? (
           <MessageContent
             content={channel.topic}
-            context={{ messages, channel, callbacks, type: RenderType.REPLY, ...options }}
+            context={{ messages, profiles, channel, callbacks, type: RenderType.REPLY, ...options }}
           />
         ) : (
           `This is the start of #${channel.name} channel.`
@@ -43,7 +43,7 @@ export default async function DiscordMessages({ messages, channel, callbacks, ..
       {/* body */}
       <Suspense>
         {messages.map((message) => (
-          <DiscordMessage message={message} context={{ messages, channel, callbacks, ...options }} key={message.id} />
+          <DiscordMessage message={message} context={{ messages, profiles, channel, callbacks, ...options }} key={message.id} />
         ))}
       </Suspense>
 

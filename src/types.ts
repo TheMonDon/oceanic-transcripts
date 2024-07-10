@@ -80,3 +80,14 @@ export type CreateTranscriptOptions<T extends ExportReturnType> = Partial<
     filter: (message: Message) => boolean;
   }
 >;
+
+export type Profile = {
+  author: string; // author of the message
+  avatar?: string; // avatar of the author
+  roleColor?: string; // role color of the author
+  roleIcon?: string; // role color of the author
+  roleName?: string; // role name of the author
+
+  bot?: boolean; // is the author a bot
+  verified?: boolean; // is the author verified
+};

@@ -1,15 +1,5 @@
-import { type Member, type Message, type User, UserFlags } from 'oceanic.js';
-
-export type Profile = {
-  author: string; // author of the message
-  avatar?: string; // avatar of the author
-  roleColor?: string; // role color of the author
-  roleIcon?: string; // role color of the author
-  roleName?: string; // role name of the author
-
-  bot?: boolean; // is the author a bot
-  verified?: boolean; // is the author verified
-};
+import { GuildChannel, type Member, type Message, type User, UserFlags } from 'oceanic.js';
+import { Profile } from '../types';
 
 export async function buildProfiles(messages: Message[]) {
   const profiles: Record<string, Profile> = {};
@@ -18,9 +8,10 @@ export async function buildProfiles(messages: Message[]) {
   for (const message of messages) {
     // add all users
     const author = message.author;
-    if (!profiles[author.id] || !profiles[author.id]?.roleName) {
+    if (!profiles[author.id]) {
       // add profile
-      profiles[author.id] = await buildProfile(message.member, author);
+      const member = (message.channel as GuildChannel).guild.members.get(author.id);
+      profiles[author.id] = await buildProfile(member, author);
     }
 
     // add interaction users

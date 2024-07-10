@@ -1,13 +1,12 @@
 import { DiscordReaction, DiscordReactions, DiscordSystemMessage } from '@derockdev/discord-components-react';
-import { MessageTypes, type Member, type Message, type User } from 'oceanic.js';
+import { MessageTypes, type Message, type User } from 'oceanic.js';
 import React from 'react';
 import { parseDiscordEmoji } from '../../utils/utils';
+import { RenderMessageContext } from '..';
+import { Profile } from '../../types';
 
-export default async function SystemMessage({ message }: { message: Message }) {
-  const roles = await message.guild?.getRoles();
-  const highestRoleColor = roles
-    ?.sort((a, b) => b.position - a.position)
-    .find((role) => message.member?.roles.includes(role.id) && role.color);
+export default async function SystemMessage({ message, context }: { message: Message; context: RenderMessageContext }) {
+  const member = context.profiles[message.author.id];
 
   switch (message.type) {
     case MessageTypes.RECIPIENT_ADD:
@@ -15,8 +14,8 @@ export default async function SystemMessage({ message }: { message: Message }) {
       return (
         <DiscordSystemMessage id={`m-${message.id}`} key={message.id} type="join">
           <JoinMessage
-            member={message.member}
-            color={'#' + highestRoleColor?.color.toString(16).padStart(6, '0')}
+            member={member}
+            color={member.roleColor ?? '#FFFFFF'}
             fallbackUser={message.author}
           />
         </DiscordSystemMessage>
@@ -25,7 +24,7 @@ export default async function SystemMessage({ message }: { message: Message }) {
     case MessageTypes.CHANNEL_PINNED_MESSAGE:
       return (
         <DiscordSystemMessage id={`m-${message.id}`} key={message.id} type="pin">
-          <Highlight color={'#' + highestRoleColor?.color.toString(16).padStart(6, '0')}>
+          <Highlight color={member.roleColor ?? '#FFFFFF'}>
             {message.author.globalName ?? message.author.username}
           </Highlight>{' '}
           pinned <i data-goto={message.referencedMessage?.id}>a message</i> to this channel.
@@ -51,7 +50,7 @@ export default async function SystemMessage({ message }: { message: Message }) {
     case MessageTypes.GUILD_BOOST_TIER_3:
       return (
         <DiscordSystemMessage id={`m-${message.id}`} key={message.id} type="boost">
-          <Highlight color={'#' + highestRoleColor?.color.toString(16).padStart(6, '0')}>
+          <Highlight color={member.roleColor ?? '#FFFFFF'}>
             {message.author.globalName ?? message.author.username}
           </Highlight>{' '}
           boosted the server!
@@ -61,7 +60,7 @@ export default async function SystemMessage({ message }: { message: Message }) {
     case MessageTypes.THREAD_STARTER_MESSAGE:
       return (
         <DiscordSystemMessage id={`ms-${message.id}`} key={message.id} type="thread">
-          <Highlight color={'#' + highestRoleColor?.color.toString(16).padStart(6, '0')}>
+          <Highlight color={member.roleColor ?? '#FFFFFF'}>
             {message.author.globalName ?? message.author.username}
           </Highlight>{' '}
           started a thread: <i data-goto={message.referencedMessage?.id}>{message.content}</i>
@@ -122,7 +121,7 @@ export function JoinMessage({
   color,
   fallbackUser,
 }: {
-  member: Member | null | undefined;
+  member: Profile;
   color: string;
   fallbackUser: User;
 }) {
@@ -133,7 +132,7 @@ export function JoinMessage({
     .flatMap((item, i) => [
       item,
       <Highlight color={color} key={i}>
-        {member?.nick ?? fallbackUser.globalName ?? fallbackUser.username}
+        {member?.author ?? fallbackUser.globalName ?? fallbackUser.username}
       </Highlight>,
     ])
     .slice(0, -1);

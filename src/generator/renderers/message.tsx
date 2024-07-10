@@ -7,7 +7,7 @@ import {
   DiscordThread,
   DiscordThreadMessage,
 } from '@derockdev/discord-components-react';
-import type { Message as MessageType} from 'oceanic.js';
+import type { GuildChannel, Message as MessageType } from 'oceanic.js';
 import { MessageTypes } from 'oceanic.js';
 import React from 'react';
 import type { RenderMessageContext } from '..';
@@ -34,13 +34,13 @@ export default async function DiscordMessage({
       MessageTypes.CONTEXT_MENU_COMMAND,
     ].includes(message.type)
   )
-    return <DiscordSystemMessage message={message} />;
+    return <DiscordSystemMessage message={message} context={context} />;
 
   const isCrosspost =
     message.referencedMessage &&
-    message.referencedMessage.guildID &&
+    (message.referencedMessage.channel as GuildChannel).guildID &&
     message.guildID &&
-    message.referencedMessage.guildID != message.guildID;
+    (message.referencedMessage.channel as GuildChannel).guildID != (message.channel as GuildChannel).guildID;
   return (
     <DiscordMessageComponent
       id={`m-${message.id}`}

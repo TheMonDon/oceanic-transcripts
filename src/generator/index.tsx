@@ -8,13 +8,13 @@ import {
 } from 'oceanic.js';
 import ReactDOMServer from 'react-dom/server';
 import React from 'react';
-import { buildProfiles } from '../utils/buildProfiles';
 import { revealSpoiler, scrollToMessage } from '../static/client';
 import { readFileSync } from 'fs';
 import path from 'path';
 import { renderToString } from '@derockdev/discord-components-core/hydrate';
 import { streamToString } from '../utils/utils';
 import DiscordMessages from './transcript';
+import { Profile } from '../types';
 
 // read the package.json file and get the @derockdev/discord-components-core version
 let discordComponentsVersion = '^3.6.1';
@@ -29,7 +29,7 @@ try {
 export type RenderMessageContext = {
   messages: Message[];
   channel: TextableChannel | AnyTextableChannel;
-
+  profiles: Record<string, Profile>;
   callbacks: {
     resolveChannel: (channelId: string) => Promise<TextableChannel | AnyTextableChannel | null>;
     resolveUser: (userId: string) => Promise<User | null>;
@@ -43,8 +43,7 @@ export type RenderMessageContext = {
   hydrate: boolean;
 };
 
-export default async function render({ messages, channel, callbacks, ...options }: RenderMessageContext) {
-  const profiles = buildProfiles(messages);
+export default async function render({ messages, profiles, channel, callbacks, ...options }: RenderMessageContext) {
   // NOTE: this renders a STATIC site with no interactivity
   // if interactivity is needed, switch to renderToPipeableStream and use hydrateRoot on client.
   const stream = ReactDOMServer.renderToStaticNodeStream(
@@ -81,7 +80,7 @@ export default async function render({ messages, channel, callbacks, ...options 
             {/* profiles */}
             <script
               dangerouslySetInnerHTML={{
-                __html: `window.$discordMessage={profiles:${JSON.stringify(await profiles)}}`,
+                __html: `window.$discordMessage={profiles:${JSON.stringify(profiles)}}`,
               }}
             ></script>
             {/* component library */}
@@ -99,7 +98,7 @@ export default async function render({ messages, channel, callbacks, ...options 
           minHeight: '100vh',
         }}
       >
-        <DiscordMessages messages={messages} channel={channel} callbacks={callbacks} {...options} />
+        <DiscordMessages messages={messages} channel={channel} profiles={profiles} callbacks={callbacks} {...options} />
       </body>
 
       {/* Make sure the script runs after the DOM has loaded */}
@@ -113,7 +112,7 @@ export default async function render({ messages, channel, callbacks, ...options 
     const result = await renderToString(markup, {
       beforeHydrate: async (document) => {
         document.defaultView.$discordMessage = {
-          profiles: await profiles,
+          profiles: profiles,
         };
       },
     });
