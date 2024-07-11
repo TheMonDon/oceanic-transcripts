@@ -1,5 +1,6 @@
-import { GuildChannel, type Member, type Message, type User, UserFlags } from 'oceanic.js';
-import { Profile } from '../types';
+import type { GuildChannel} from 'oceanic.js';
+import { type Member, type Message, type User, UserFlags } from 'oceanic.js';
+import type { Profile } from '../types';
 
 export async function buildProfiles(messages: Message[]) {
   const profiles: Record<string, Profile> = {};
@@ -13,20 +14,27 @@ export async function buildProfiles(messages: Message[]) {
     console.error('Failed to fetch members in bulk, will fetch individually as needed.', error);
   }
 
+  async function getMember(
+    userId: string,
+    members: Map<string, Member> | null,
+    channel: GuildChannel
+  ): Promise<Member | null> {
+    if (members) {
+      return members.get(userId) || null;
+    } else {
+      return await channel.guild.getMember(userId).catch(() => null);
+    }
+  }
+
   // loop through messages
   for (const message of messages) {
-    async function getMember(userId: string): Promise<Member | null> {
-      if (members) {
-        return members.get(userId) || null;
-      } else {
-        return await (message.channel as GuildChannel).guild.getMember(userId).catch(() => null);
-      }
-    }
+    // Adjusted calls to getMember to pass the necessary parameters
+    const channel = message.channel as GuildChannel;
 
     // add all users
     const author = message.author;
     if (!profiles[author.id]) {
-      const member = await getMember(author.id);
+      const member = await getMember(author.id, members, channel);
       profiles[author.id] = await buildProfile(member, author);
     }
 
@@ -34,7 +42,7 @@ export async function buildProfiles(messages: Message[]) {
     if (message.interactionMetadata) {
       const user = message.interactionMetadata.user;
       if (!profiles[user.id]) {
-        const member = await getMember(user.id);
+        const member = await getMember(user.id, members, channel);
         profiles[user.id] = await buildProfile(member, user);
       }
     }
@@ -43,7 +51,7 @@ export async function buildProfiles(messages: Message[]) {
     if (message.thread && message.thread.lastMessage) {
       const threadAuthor = message.thread.lastMessage.author;
       if (!profiles[threadAuthor.id]) {
-        const member = await getMember(threadAuthor.id);
+        const member = await getMember(threadAuthor.id, members, channel);
         profiles[threadAuthor.id] = await buildProfile(member, threadAuthor);
       }
     }

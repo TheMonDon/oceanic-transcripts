@@ -1,12 +1,5 @@
-import type {
-  AnyTextableChannel,
-  TextableChannel} from 'oceanic.js';
-import {
-  ChannelTypes,
-  Collection,
-  TextableChannelTypes,
-  type Message,
-} from 'oceanic.js';
+import type { AnyTextableChannel, TextableChannel } from 'oceanic.js';
+import { ChannelTypes, Collection, TextableChannelTypes, type Message } from 'oceanic.js';
 import DiscordMessages from './generator';
 import {
   ExportReturnType,

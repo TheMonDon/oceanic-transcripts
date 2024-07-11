@@ -14,7 +14,7 @@ import path from 'path';
 import { renderToString } from '@derockdev/discord-components-core/hydrate';
 import { streamToString } from '../utils/utils';
 import DiscordMessages from './transcript';
-import { Profile } from '../types';
+import type { Profile } from '../types';
 
 // read the package.json file and get the @derockdev/discord-components-core version
 let discordComponentsVersion = '^3.6.1';

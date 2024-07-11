@@ -19,7 +19,7 @@ client.on('messageCreate', async (message) => {
 
     const startTyping = () => message.channel?.sendTyping();
     startTyping();
-    let typingInterval = setInterval(startTyping, 7000);
+    const typingInterval = setInterval(startTyping, 7000);
 
     const attachment = await createTranscript(message.channel);
 

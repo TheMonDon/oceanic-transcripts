@@ -2,8 +2,8 @@ import { DiscordReaction, DiscordReactions, DiscordSystemMessage } from '@derock
 import { MessageTypes, type Message, type User } from 'oceanic.js';
 import React from 'react';
 import { parseDiscordEmoji } from '../../utils/utils';
-import { RenderMessageContext } from '..';
-import { Profile } from '../../types';
+import type { RenderMessageContext } from '..';
+import type { Profile } from '../../types';
 
 export default async function SystemMessage({ message, context }: { message: Message; context: RenderMessageContext }) {
   const member = context.profiles[message.author.id];
@@ -13,11 +13,7 @@ export default async function SystemMessage({ message, context }: { message: Mes
     case MessageTypes.USER_JOIN:
       return (
         <DiscordSystemMessage id={`m-${message.id}`} key={message.id} type="join">
-          <JoinMessage
-            member={member}
-            color={member.roleColor ?? '#FFFFFF'}
-            fallbackUser={message.author}
-          />
+          <JoinMessage member={member} color={member.roleColor ?? '#FFFFFF'} fallbackUser={message.author} />
         </DiscordSystemMessage>
       );
 
@@ -116,15 +112,7 @@ const allJoinMessages = [
   "Hello. Is it {user} you're looking for?",
 ];
 
-export function JoinMessage({
-  member,
-  color,
-  fallbackUser,
-}: {
-  member: Profile;
-  color: string;
-  fallbackUser: User;
-}) {
+export function JoinMessage({ member, color, fallbackUser }: { member: Profile; color: string; fallbackUser: User }) {
   const randomMessage = allJoinMessages[Math.floor(Math.random() * allJoinMessages.length)];
 
   return randomMessage
