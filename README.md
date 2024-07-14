@@ -1,9 +1,9 @@
 # `oceanic-transcripts`
 
-[![Discord](https://img.shields.io/discord/555474311637499955?label=discord)](https://discord.gg/rf5qN7C)
-[![npm](https://img.shields.io/npm/dw/discord-html-transcripts)](http://npmjs.org/package/discord-html-transcripts)
-![GitHub package.json version](https://img.shields.io/github/package-json/v/ItzDerock/discord-html-transcripts)
-![GitHub Repo stars](https://img.shields.io/github/stars/ItzDerock/discord-html-transcripts?style=social)
+[![Discord](https://img.shields.io/discord/579742127676981269?label=discord)](https://discord.gg/XvHzUNZDdR)
+[![npm](https://img.shields.io/npm/dw/oceanic-transcripts)](http://npmjs.org/package/oceanic-transcripts)
+![GitHub package.json version](https://img.shields.io/github/package-json/v/TheMonDon/oceanic-transcripts)
+![GitHub Repo stars](https://img.shields.io/github/stars/TheMonDon/oceanic-transcripts?style=social)
 
 Oceanic Transcripts is a node.js module to generate nice looking HTML transcripts. Processes discord markdown like **bold**, _italics_, ~~strikethroughs~~, and more. Nicely formats attachments and embeds. Built in XSS protection, preventing users from inserting arbitrary html tags.
 
