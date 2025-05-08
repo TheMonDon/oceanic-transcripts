@@ -55,7 +55,7 @@ export default async function DiscordMessage({
       <MessageReply message={message} context={context} />
 
       {/* slash command */}
-      {message.interactionMetadata && (
+      {message.interactionMetadata && 'name' in message.interactionMetadata && (
         <DiscordCommand
           slot="reply"
           profile={message.interactionMetadata.user.id}
@@ -83,7 +83,7 @@ export default async function DiscordMessage({
       {message.components.length > 0 && (
         <DiscordAttachments slot="components">
           {message.components.map((component, id) => (
-            <ComponentRow key={id} id={id} row={component} />
+            <ComponentRow key={id} id={id} row={component} context={context} />
           ))}
         </DiscordAttachments>
       )}

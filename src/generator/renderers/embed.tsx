@@ -25,7 +25,7 @@ export async function DiscordEmbed({ embed, context }: { embed: Embed; context: 
       authorImage={embed.author?.proxyIconURL ?? embed.author?.iconURL}
       authorName={embed.author?.name}
       authorUrl={embed.author?.url}
-      color={'#' + embed.color?.toString(16).padStart(6, '0') ?? undefined}
+      color={'#' + embed.color?.toString(16).padStart(6, '0')}
       image={embed.image?.proxyURL ?? embed.image?.url}
       thumbnail={embed.thumbnail?.proxyURL ?? embed.thumbnail?.url}
       url={embed.url ?? undefined}

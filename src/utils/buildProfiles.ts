@@ -1,4 +1,4 @@
-import type { GuildChannel} from 'oceanic.js';
+import type { GuildChannel } from 'oceanic.js';
 import { type Member, type Message, type User, UserFlags } from 'oceanic.js';
 import type { Profile } from '../types';
 
@@ -76,7 +76,7 @@ async function buildProfile(member: Member | undefined | null, author: User) {
   return {
     author: member?.nick ?? author.globalName ?? author.username,
     avatar: member?.avatarURL('jpg', 64) ?? author.avatarURL('jpg', 64),
-    roleColor: '#' + highestRoleColor?.color.toString(16).padStart(6, '0') ?? undefined,
+    roleColor: '#' + highestRoleColor?.color.toString(16).padStart(6, '0'),
     roleIcon: highestRoleIcon?.icon ?? undefined,
     roleName: highestRoleName?.name ?? undefined,
     bot: author.bot,

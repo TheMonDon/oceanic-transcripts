@@ -26,8 +26,9 @@ This module can format the following:
 - Replies
 - Mentions
 - Threads
+- Components v2
 
-**This module is designed to work with [Oceanic.js](https://oceanic.ws/) v1.11.0**
+**This module is designed to work with [Oceanic.js](https://oceanic.ws/) v1.12.0**
 
 Styles from [@derockdev/discord-components](https://github.com/ItzDerock/discord-components).  
 Behind the scenes, this package uses React SSR to generate a static site.

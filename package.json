@@ -1,6 +1,6 @@
 {
   "name": "oceanic-transcripts",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "description": "A nicely formatted html transcript generator for oceanic.js.",
   "main": "dist/index.js",
   "homepage": "https://github.com/TheMonDon/oceanic-transcripts",
@@ -57,7 +57,7 @@
     "@derockdev/discord-components-core": "^3.6.1",
     "@derockdev/discord-components-react": "^3.6.1",
     "discord-markdown-parser": "~1.1.0",
-    "oceanic.js": "^1.11.0",
+    "oceanic.js": "^1.12.0",
     "react": "0.0.0-experimental-6639ed3b3-20240111",
     "react-dom": "0.0.0-experimental-6639ed3b3-20240111",
     "simple-markdown": "^0.7.3",
