@@ -5,12 +5,9 @@ import type {
   SelectMenuComponent,
   MediaGalleryComponent,
   SectionComponent,
-  ThumbnailComponent} from 'oceanic.js';
-import {
-  ButtonStyles,
-  ComponentTypes,
-  SeparatorSpacingSize
+  ThumbnailComponent,
 } from 'oceanic.js';
+import { ButtonStyles, ComponentTypes, SeparatorSpacingSize } from 'oceanic.js';
 import type { RenderMessageContext } from '../../';
 import { DiscordAttachment } from '@derockdev/discord-components-react';
 import { parseDiscordEmoji } from '../../../utils/utils';

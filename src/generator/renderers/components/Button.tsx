@@ -11,7 +11,11 @@ interface DiscordButtonProps {
 export const DiscordButton: React.FC<DiscordButtonProps> = ({ type, url, emoji, children }) => {
   return (
     <a href={url} target="_blank" style={getButtonStyle(type)}>
-      {emoji && <span style={{ display: 'flex', alignItems: 'center' }}>{emoji}</span>}
+      {emoji && (
+        <span style={{ display: 'flex', alignItems: 'center' }}>
+          <img src={emoji} alt="emoji" style={{ width: '16px', height: '16px', marginRight: '8px' }} />
+        </span>
+      )}
       <span style={{ display: 'flex', alignItems: 'center' }}>{children}</span>
       {url && (
         <span style={{ marginLeft: '8px', display: 'flex', alignItems: 'center' }}>
