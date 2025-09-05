@@ -21,9 +21,7 @@ const DiscordSection: React.FC<DiscordSectionProps> = ({ children, accessory, id
       }}
     >
       <SectionContent>{children}</SectionContent>
-      <SectionAccessory>
-        {accessory && <Component component={accessory} id={id} />}
-      </SectionAccessory>
+      <SectionAccessory>{accessory && <Component component={accessory} id={id} />}</SectionAccessory>
     </div>
   );
 };

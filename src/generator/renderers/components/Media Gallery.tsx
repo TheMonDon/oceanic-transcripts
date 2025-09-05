@@ -2,7 +2,6 @@ import React from 'react';
 import type { MediaGalleryComponent } from 'discord.js';
 import { getGalleryLayout, getImageStyle } from './utils';
 
-
 const DiscordMediaGallery: React.FC<{ component: MediaGalleryComponent }> = ({ component }) => {
   if (!component.items || component.items.length === 0) {
     return null;

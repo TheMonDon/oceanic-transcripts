@@ -1,5 +1,16 @@
-import { DiscordActionRow, DiscordAttachment, DiscordButton, DiscordSpoiler } from '@derockdev/discord-components-react';
-import { ButtonStyle, ComponentType, type ThumbnailComponent, type MessageActionRowComponent, type TopLevelComponent } from 'discord.js';
+import {
+  DiscordActionRow,
+  DiscordAttachment,
+  DiscordButton,
+  DiscordSpoiler,
+} from '@derockdev/discord-components-react';
+import {
+  ButtonStyle,
+  ComponentType,
+  type ThumbnailComponent,
+  type MessageActionRowComponent,
+  type TopLevelComponent,
+} from 'discord.js';
 import React from 'react';
 import { parseDiscordEmoji } from '../../utils/utils';
 import DiscordSelectMenu from './components/Select Menu';
@@ -11,7 +22,15 @@ import MessageContent from './content';
 import { RenderType } from './content';
 import type { RenderMessageContext } from '..';
 
-export default function ComponentRow({ component, id, context }: { component: TopLevelComponent; id: number; context: RenderMessageContext }) {
+export default function ComponentRow({
+  component,
+  id,
+  context,
+}: {
+  component: TopLevelComponent;
+  id: number;
+  context: RenderMessageContext;
+}) {
   if (component.type === ComponentType.ActionRow) {
     return (
       <DiscordActionRow key={id}>
@@ -23,7 +42,7 @@ export default function ComponentRow({ component, id, context }: { component: To
       </DiscordActionRow>
     );
   }
-  
+
   if (component.type === ComponentType.Container) {
     return (
       <DiscordContainer key={id}>
@@ -35,25 +54,23 @@ export default function ComponentRow({ component, id, context }: { component: To
       </DiscordContainer>
     );
   }
-  
+
   if (component.type === ComponentType.File) {
     return (
       <>
-        {component.spoiler ?
+        {component.spoiler ? (
           <DiscordSpoiler key={component.id} slot="attachment">
-            <DiscordAttachment type='file' key={component.id} slot="attachment" url={component.file.url} />
+            <DiscordAttachment type="file" key={component.id} slot="attachment" url={component.file.url} />
           </DiscordSpoiler>
-          :
-          <DiscordAttachment type='file' key={component.id} slot="attachment" url={component.file.url} />
-        }
+        ) : (
+          <DiscordAttachment type="file" key={component.id} slot="attachment" url={component.file.url} />
+        )}
       </>
     );
   }
 
   if (component.type === ComponentType.MediaGallery) {
-    return (
-      <DiscordMediaGallery component={component} key={id} />
-    );
+    return <DiscordMediaGallery component={component} key={id} />;
   }
 
   if (component.type === ComponentType.Section) {
@@ -67,19 +84,11 @@ export default function ComponentRow({ component, id, context }: { component: To
   }
 
   if (component.type === ComponentType.Separator) {
-    return (
-      <DiscordSeperator key={id} spacing={component.spacing} divider={component.divider} />
-    );
+    return <DiscordSeperator key={id} spacing={component.spacing} divider={component.divider} />;
   }
 
   if (component.type === ComponentType.TextDisplay) {
-    return (
-      <MessageContent
-        key={id}
-        content={component.content}
-        context={{ ...context, type: RenderType.NORMAL }}
-      />
-    );
+    return <MessageContent key={id} content={component.content} context={{ ...context, type: RenderType.NORMAL }} />;
   }
 }
 
@@ -91,7 +100,13 @@ const ButtonStyleMapping = {
   [ButtonStyle.Link]: 'secondary',
 } as const;
 
-export function Component({ component, id }: { component: MessageActionRowComponent | ThumbnailComponent; id: number }) {
+export function Component({
+  component,
+  id,
+}: {
+  component: MessageActionRowComponent | ThumbnailComponent;
+  id: number;
+}) {
   if (component.type === ComponentType.Button) {
     return (
       <DiscordButton
@@ -105,16 +120,14 @@ export function Component({ component, id }: { component: MessageActionRowCompon
     );
   }
 
-  if (component.type === ComponentType.StringSelect ||
+  if (
+    component.type === ComponentType.StringSelect ||
     component.type === ComponentType.UserSelect ||
     component.type === ComponentType.RoleSelect ||
     component.type === ComponentType.MentionableSelect ||
-    component.type === ComponentType.ChannelSelect) {
-    return (
-      <DiscordSelectMenu
-        key={id}
-        component={component} />
-    );
+    component.type === ComponentType.ChannelSelect
+  ) {
+    return <DiscordSelectMenu key={id} component={component} />;
   }
 
   return undefined;
