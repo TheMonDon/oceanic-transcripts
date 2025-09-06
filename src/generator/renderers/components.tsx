@@ -1,11 +1,5 @@
+import { DiscordActionRow, DiscordAttachment, DiscordSpoiler } from '@derockdev/discord-components-react';
 import {
-  DiscordActionRow,
-  DiscordAttachment,
-  DiscordButton,
-  DiscordSpoiler,
-} from '@derockdev/discord-components-react';
-import {
-  ButtonStyle,
   ComponentType,
   type ThumbnailComponent,
   type MessageActionRowComponent,
@@ -18,9 +12,12 @@ import DiscordContainer from './components/Container';
 import DiscordSection from './components/section/Section';
 import DiscordMediaGallery from './components/Media Gallery';
 import DiscordSeperator from './components/Spacing';
+import DiscordButton from './components/Button';
+import DiscordThumbnail from './components/Thumbnail';
 import MessageContent from './content';
 import { RenderType } from './content';
 import type { RenderMessageContext } from '..';
+import { ButtonStyleMapping } from './components/styles';
 
 export default function ComponentRow({
   component,
@@ -31,74 +28,76 @@ export default function ComponentRow({
   id: number;
   context: RenderMessageContext;
 }) {
-  if (component.type === ComponentType.ActionRow) {
-    return (
-      <DiscordActionRow key={id}>
-        <>
-          {component.components.map((nestedComponent, id) => (
-            <Component component={nestedComponent} id={id} key={id} />
-          ))}
-        </>
-      </DiscordActionRow>
-    );
-  }
+  switch (component.type) {
+    case ComponentType.ActionRow:
+      return (
+        <DiscordActionRow key={id}>
+          <>
+            {component.components.map((nestedComponent, id) => (
+              <Component component={nestedComponent} id={id} key={id} />
+            ))}
+          </>
+        </DiscordActionRow>
+      );
 
-  if (component.type === ComponentType.Container) {
-    return (
-      <DiscordContainer key={id}>
+    case ComponentType.Container:
+      return (
+        <DiscordContainer key={id}>
+          <>
+            {component.components.map((nestedComponent, id) => (
+              <ComponentRow component={nestedComponent} id={id} key={id} context={context} />
+            ))}
+          </>
+        </DiscordContainer>
+      );
+
+    case ComponentType.File:
+      return (
         <>
+          {component.spoiler ? (
+            <DiscordSpoiler key={component.id} slot="attachment">
+              <DiscordAttachment
+                type="file"
+                key={component.id}
+                slot="attachment"
+                url={component.file.url}
+                alt="Discord Attachment"
+              />
+            </DiscordSpoiler>
+          ) : (
+            <DiscordAttachment
+              type="file"
+              key={component.id}
+              slot="attachment"
+              url={component.file.url}
+              alt="Discord Attachment"
+            />
+          )}
+        </>
+      );
+
+    case ComponentType.MediaGallery:
+      return <DiscordMediaGallery component={component} key={id} />;
+
+    case ComponentType.Section:
+      return (
+        <DiscordSection key={id} accessory={component.accessory} id={id}>
           {component.components.map((nestedComponent, id) => (
             <ComponentRow component={nestedComponent} id={id} key={id} context={context} />
           ))}
-        </>
-      </DiscordContainer>
-    );
-  }
+        </DiscordSection>
+      );
 
-  if (component.type === ComponentType.File) {
-    return (
-      <>
-        {component.spoiler ? (
-          <DiscordSpoiler key={component.id} slot="attachment">
-            <DiscordAttachment type="file" key={component.id} slot="attachment" url={component.file.url} />
-          </DiscordSpoiler>
-        ) : (
-          <DiscordAttachment type="file" key={component.id} slot="attachment" url={component.file.url} />
-        )}
-      </>
-    );
-  }
+    case ComponentType.Separator:
+      return <DiscordSeperator key={id} spacing={component.spacing} divider={component.divider} />;
 
-  if (component.type === ComponentType.MediaGallery) {
-    return <DiscordMediaGallery component={component} key={id} />;
-  }
+    case ComponentType.TextDisplay:
+      return <MessageContent key={id} content={component.content} context={{ ...context, type: RenderType.NORMAL }} />;
 
-  if (component.type === ComponentType.Section) {
-    return (
-      <DiscordSection key={id} accessory={component.accessory} id={id}>
-        {component.components.map((nestedComponent, id) => (
-          <ComponentRow component={nestedComponent} id={id} key={id} context={context} />
-        ))}
-      </DiscordSection>
-    );
-  }
-
-  if (component.type === ComponentType.Separator) {
-    return <DiscordSeperator key={id} spacing={component.spacing} divider={component.divider} />;
-  }
-
-  if (component.type === ComponentType.TextDisplay) {
-    return <MessageContent key={id} content={component.content} context={{ ...context, type: RenderType.NORMAL }} />;
+    default:
+      return null;
   }
 }
-
-const ButtonStyleMapping = {
-  [ButtonStyle.Primary]: 'primary',
-  [ButtonStyle.Secondary]: 'secondary',
-  [ButtonStyle.Success]: 'success',
-  [ButtonStyle.Danger]: 'destructive',
-  [ButtonStyle.Link]: 'secondary',
-} as const;
 
 export function Component({
   component,
@@ -107,28 +106,30 @@ export function Component({
   component: MessageActionRowComponent | ThumbnailComponent;
   id: number;
 }) {
-  if (component.type === ComponentType.Button) {
-    return (
-      <DiscordButton
-        key={id}
-        type={ButtonStyleMapping[component.style as keyof typeof ButtonStyleMapping]}
-        url={component.url ?? undefined}
-        emoji={component.emoji ? parseDiscordEmoji(component.emoji) : undefined}
-      >
-        {component.label}
-      </DiscordButton>
-    );
-  }
+  switch (component.type) {
+    case ComponentType.Button:
+      return (
+        <DiscordButton
+          key={id}
+          type={ButtonStyleMapping[component.style as keyof typeof ButtonStyleMapping]}
+          url={component.url ?? undefined}
+          emoji={component.emoji ? parseDiscordEmoji(component.emoji) : undefined}
+        >
+          {component.label}
+        </DiscordButton>
+      );
 
-  if (
-    component.type === ComponentType.StringSelect ||
-    component.type === ComponentType.UserSelect ||
-    component.type === ComponentType.RoleSelect ||
-    component.type === ComponentType.MentionableSelect ||
-    component.type === ComponentType.ChannelSelect
-  ) {
-    return <DiscordSelectMenu key={id} component={component} />;
-  }
+    case ComponentType.StringSelect:
+    case ComponentType.UserSelect:
+    case ComponentType.RoleSelect:
+    case ComponentType.MentionableSelect:
+    case ComponentType.ChannelSelect:
+      return <DiscordSelectMenu key={id} component={component} />;
 
-  return undefined;
+    case ComponentType.Thumbnail:
+      return <DiscordThumbnail key={id} url={component.media.url} />;
+
+    default:
+      return undefined;
+  }
 }

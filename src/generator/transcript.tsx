@@ -4,6 +4,7 @@ import React from 'react';
 import type { RenderMessageContext } from '.';
 import MessageContent, { RenderType } from './renderers/content';
 import DiscordMessage from './renderers/message';
+import { globalStyles } from './renderers/components/styles';
 
 /**
  * The core transcript component.
@@ -15,7 +16,7 @@ import DiscordMessage from './renderers/message';
 export default async function DiscordMessages({ messages, channel, callbacks, ...options }: RenderMessageContext) {
   return (
     <DiscordMessagesComponent style={{ minHeight: '100vh' }}>
-      {/* header */}
+      <style dangerouslySetInnerHTML={{ __html: globalStyles }} />;
       <DiscordHeader
         guild={channel.isDMBased() ? 'Direct Messages' : channel.guild.name}
         channel={
@@ -44,12 +45,10 @@ export default async function DiscordMessages({ messages, channel, callbacks, ..
           `This is the start of #${channel.name} channel.`
         )}
       </DiscordHeader>
-
       {/* body */}
       {messages.map((message) => (
         <DiscordMessage message={message} context={{ messages, channel, callbacks, ...options }} key={message.id} />
       ))}
-
       {/* footer */}
       <div style={{ textAlign: 'center', width: '100%' }}>
         {options.footerText

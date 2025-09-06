@@ -2,7 +2,6 @@ import React from 'react';
 import { type MessageActionRowComponent, ComponentType } from 'discord.js';
 import { parseDiscordEmoji } from '../../../utils/utils';
 import { getSelectTypeLabel } from './utils';
-import { selectMenuStyle } from './styles';
 
 const DiscordSelectMenu: React.FC<{
   component: Exclude<MessageActionRowComponent, { type: ComponentType.Button }>;
@@ -11,7 +10,7 @@ const DiscordSelectMenu: React.FC<{
   const placeholder = component.placeholder || getSelectTypeLabel(component.type);
 
   return (
-    <div style={selectMenuStyle}>
+    <div className="discord-select-menu">
       <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{placeholder}</div>
       <div style={{ display: 'flex', alignItems: 'center', marginLeft: '8px' }}>
         <svg width="24" height="24" viewBox="0 0 24 24">
