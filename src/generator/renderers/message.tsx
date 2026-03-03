@@ -63,6 +63,43 @@ export default async function DiscordMessage({
         />
       )}
 
+      {/* Forwarded Messages (Snapshots) */}
+      {message.messageSnapshots &&
+        message.messageSnapshots.map((snapshot, index) => (
+          <DiscordThread
+            key={`snapshot-${index}`}
+            slot="thread"
+            name="Forwarded"
+            cta={snapshot.message?.timestamp.toLocaleTimeString([], {
+              hour: 'numeric',
+              minute: '2-digit',
+              hour12: true,
+            })}
+          >
+            <React.Fragment>
+              {/* Snapshot Content */}
+              {snapshot.message?.content && (
+                <MessageContent content={snapshot.message.content} context={{ ...context, type: RenderType.REPLY }} />
+              )}
+
+              {/* Snapshot Attachments (The Pumpkin Image) */}
+              {snapshot.message?.attachments.map((attachment) => (
+                <Attachments
+                  key={attachment.id}
+                  // We pass a dummy message object so the Attachment component can render
+                  message={{ ...message, attachments: [attachment] } as any}
+                  context={context}
+                />
+              ))}
+
+              {/* Snapshot Embeds */}
+              {snapshot.message?.embeds.map((embed, id) => (
+                <DiscordEmbed key={`snap-embed-${id}`} embed={embed} context={{ ...context, index: id, message }} />
+              ))}
+            </React.Fragment>
+          </DiscordThread>
+        ))}
+
       {/* message content */}
       {message.content && (
         <MessageContent
